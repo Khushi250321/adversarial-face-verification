@@ -1,0 +1,7 @@
+temp_src.jpg
+temp_tgt.jpg
+*.pyc
+__pycache__/
+.streamlit/
+*.csv
+*.zip
