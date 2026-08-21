@@ -1,252 +1,104 @@
-\# Adversarial Face Verification Dashboard
+# 🛡️ FaceGuard — Adversarial Face Verification Demo
 
+An interactive web application demonstrating transfer-based adversarial attacks on face verification systems. Upload two face images, select an attack method, and see how invisible perturbations can fool state-of-the-art face recognition models.
 
+**Live Demo:** Run locally with `streamlit run app.py`
 
-A Streamlit-based interactive dashboard to demonstrate transfer-based adversarial attacks on face verification systems.
+---
 
+## What is this?
 
+Face verification systems decide if two face images belong to the same person using cosine similarity scores. FaceGuard demonstrates how adversarial attacks can manipulate these scores by adding imperceptible noise to face images.
 
-Built as an extension of my Summer 2026 internship at \*\*DRDO SAG Lab\*\*, where I implemented and evaluated VMI-FGSM on CNN-based face recognition models.
+Two attack goals:
+- **Impersonation** — fool the model into thinking Person A is Person B
+- **Dodging** — fool the model into failing to recognize Person A
 
+---
 
+## Attacks Implemented
 
-\---
+| Attack | Paper | Key Idea |
+|--------|-------|----------|
+| VMI-FGSM | CVPR 2021 | Variance-tuned momentum — samples gradient neighbourhood |
+| MI-FGSM | CVPR 2018 | Momentum accumulation for stable gradient direction |
+| TI-FGSM | CVPR 2019 | Translation-invariant perturbations via Gaussian smoothing |
+| PGD | ICLR 2018 | Projected gradient descent with epsilon-ball constraint |
 
+---
 
+## Features
 
-\## What is this project?
+- Upload any two face images
+- Choose attack method and goal from sidebar
+- View original vs adversarial image side by side
+- Perturbation map (amplified 10x for visibility)
+- Real-time similarity scores before and after attack
+- Visual bar chart with decision threshold
+- Plain English explanation of what happened
 
+---
 
+## Tech Stack
 
-Face verification systems compare two face images and decide if they belong to the same person using cosine similarity scores. This project demonstrates how adversarial attacks can fool these systems by adding invisible noise to face images.
+- Python 3.11
+- TensorFlow 2.13
+- DeepFace
+- Streamlit
+- NumPy
+- Matplotlib
+- Pillow
 
+---
 
-
-Two types of attacks are demonstrated:
-
-\- \*\*Impersonation\*\* — make the model think Person A is Person B
-
-\- \*\*Dodging\*\* — make the model fail to recognize Person A
-
-
-
-\---
-
-
-
-\## Attacks Implemented
-
-
-
-| Attack | Paper | Description |
-
-|--------|-------|-------------|
-
-| VMI-FGSM | CVPR 2021 | Variance-Tuned Momentum Iterative FGSM — strongest transfer attack |
-
-| MI-FGSM | CVPR 2018 | Momentum Iterative FGSM |
-
-| PGD | ICLR 2018 | Projected Gradient Descent |
-
-| TI-FGSM | CVPR 2019 | Translation Invariant FGSM |
-
-
-
-\---
-
-
-
-\## Features
-
-
-
-\- Upload any two face images
-
-\- Select attack method and parameters
-
-\- View original vs adversarial image side by side
-
-\- See perturbation map (amplified 10x)
-
-\- Real-time similarity scores before and after attack
-
-\- Attack success/failure result with explanation
-
-
-
-\---
-
-
-
-\## Tech Stack
-
-
-
-\- Python 3.11
-
-\- TensorFlow 2.13
-
-\- DeepFace
-
-\- Streamlit
-
-\- NumPy
-
-\- Matplotlib
-
-\- Pillow
-
-
-
-\---
-
-
-
-\## Models Supported
-
-
-
-\*\*Attacker (Surrogate) Models:\*\*
-
-\- FaceNet512
-
-\- ArcFace
-
-\- GhostFaceNet
-
-\- VGG-Face
-
-
-
-\---
-
-
-
-\## Installation
-
-
+## Installation
 
 ```bash
-
-\# Clone the repository
-
 git clone https://github.com/Khushi250321/adversarial-face-verification.git
-
 cd adversarial-face-verification
 
-
-
-\# Create virtual environment
-
 python -m venv venv
-
-venv\\Scripts\\activate
-
-
-
-\# Install dependencies
+venv\Scripts\activate
 
 pip install -r requirements.txt
-
-
-
-\# Run the app
-
 streamlit run app.py
-
 ```
 
+Open `localhost:8501` in your browser.
 
+---
 
-\---
+## How it Works
 
+1. Source face image is preprocessed and passed through the surrogate model
+2. Adversarial perturbation is computed using the selected attack algorithm
+3. Perturbation is added to the source image within an epsilon budget
+4. The adversarial image is evaluated against the target embedding
+5. Cosine similarity is compared against the decision threshold
 
+---
 
-\## Usage
+## Results
 
-
-
-1\. Open the app at `localhost:8501`
-
-2\. Upload a \*\*source face image\*\* (the face to be attacked)
-
-3\. Upload a \*\*target face image\*\* (the identity to impersonate)
-
-4\. Select attack configuration in the sidebar
-
-5\. Click \*\*Run Attack\*\*
-
-6\. View results — original vs adversarial image, similarity scores, attack outcome
-
-
-
-\---
-
-
-
-\## Internship Context
-
-
-
-The attack implementations (VMI-FGSM, MI-FGSM, PGD, TI-FGSM) were developed during my Summer 2026 internship at \*\*DRDO SAG Lab\*\* under mentor Sanchit Gupta, as part of research on adversarial robustness of face recognition systems.
-
-
-
-This Streamlit dashboard was independently built after the internship to demonstrate the attacks interactively for portfolio purposes.
-
-
-
-\---
-
-
-
-\## Results (from DRDO evaluation)
-
-
-
-VMI-FGSM achieved an overall breach rate of \*\*40.74%\*\* on the official evaluation pipeline, outperforming all baseline attacks:
-
-
+VMI-FGSM achieved **40.74% overall breach rate** on official evaluation, outperforming all baseline attacks:
 
 | Attack | Breach Rate |
-
 |--------|-------------|
-
 | VMI-FGSM | 40.74% |
-
 | SI-NI-FGSM | 33.14% |
-
 | MI-FGSM | 27.27% |
-
 | MI-ADMIX-DI-TI | 25.38% |
-
 | TI-FGSM | 21.59% |
-
 | PGD | 17.61% |
 
+---
 
+## Ethical Note
 
-\---
+This project is for educational and research purposes only. It demonstrates AI vulnerabilities to motivate better defenses. Do not use for unauthorized access or harm.
 
+---
 
+## License
 
-\## Ethical Note
-
-
-
-This project is for educational and research purposes only. All experiments use consented public face images. The attacks demonstrated here highlight vulnerabilities in AI systems to motivate better defenses — not to enable unauthorized access.
-
-
-
-\---
-
-
-
-\## Author
-
-
-
-\*\*Khushi\*\* — B.Tech Information Technology, IGDTUW  
-
-Summer Internship 2026 — DRDO SAG Lab
-
+MIT License
